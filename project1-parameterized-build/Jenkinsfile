@@ -1,0 +1,37 @@
+pipeline {
+    agent any
+
+    parameters {
+        choice(
+            name: 'ENVIRONMENT',
+            choices: ['dev', 'staging', 'prod'],
+            description: 'Select the deployment environment for the Online Exam System'
+        )
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/M123ukta/DevOps-Lab-Assessment-7'
+            }
+        }
+
+        stage('Show Parameter') {
+            steps {
+                echo "Selected environment: ${params.ENVIRONMENT}"
+            }
+        }
+
+        stage('Compile') {
+            steps {
+                bat 'javac project1-parameterized-build\\src\\ExamServerConfig.java'
+            }
+        }
+
+        stage('Build for Environment') {
+            steps {
+                bat "java -cp project1-parameterized-build\\src ExamServerConfig ${params.ENVIRONMENT}"
+            }
+        }
+    }
+}

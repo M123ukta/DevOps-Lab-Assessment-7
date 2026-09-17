@@ -1,0 +1,38 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/M123ukta/DevOps-Lab-Assessment-7'
+            }
+        }
+
+        stage('Compile Modules') {
+            steps {
+                bat 'javac project3-parallel-stages\\src\\QuestionBankValidator.java project3-parallel-stages\\src\\StudentModuleValidator.java'
+            }
+        }
+
+        stage('Parallel Checks') {
+            parallel {
+                stage('Question Bank Check') {
+                    steps {
+                        bat 'java -cp project3-parallel-stages\\src QuestionBankValidator'
+                    }
+                }
+                stage('Student Module Check') {
+                    steps {
+                        bat 'java -cp project3-parallel-stages\\src StudentModuleValidator'
+                    }
+                }
+            }
+        }
+
+        stage('Summary') {
+            steps {
+                echo 'Both Question Bank and Student Module checks are complete.'
+            }
+        }
+    }
+}

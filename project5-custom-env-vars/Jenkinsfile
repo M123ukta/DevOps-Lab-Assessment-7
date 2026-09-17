@@ -1,0 +1,35 @@
+pipeline {
+    agent any
+
+    environment {
+        APP_NAME    = 'OnlineExamEvaluationSystem'
+        APP_VERSION = '1.0.0'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/M123ukta/DevOps-Lab-Assessment-7'
+            }
+        }
+
+        stage('Show App Info') {
+            steps {
+                echo "Building ${env.APP_NAME}, version ${env.APP_VERSION}"
+            }
+        }
+
+        stage('Compile') {
+            steps {
+                bat 'javac project5-custom-env-vars\\src\\ExamEvaluationApp.java'
+            }
+        }
+
+        stage('Build & Run') {
+            steps {
+                bat 'java -cp project5-custom-env-vars\\src ExamEvaluationApp'
+                echo "${env.APP_NAME} version ${env.APP_VERSION} compiled and executed successfully."
+            }
+        }
+    }
+}
